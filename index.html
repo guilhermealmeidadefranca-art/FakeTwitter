@@ -10,6 +10,72 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
+      /* =========================================
+AUTH
+========================================= */
+
+.auth-screen{
+  position:fixed;
+  inset:0;
+  background:#f3f5f7;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.auth-card{
+  width:100%;
+  max-width:450px;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.08);
+}
+
+.auth-card h1{
+  color:#1d9bf0;
+  margin-bottom:10px;
+}
+
+.subtitle{
+  color:#6b7280;
+  margin-bottom:20px;
+}
+
+.auth-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.profile-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.profile-photo{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #1d9bf0;
+}
+
+.profile-name{
+  font-weight:bold;
+}
+
+.profile-status{
+  color:#1d9bf0;
+  font-size:14px;
+}
+
+.profile-bio{
+  color:#6b7280;
+  font-size:14px;
+}
     }
 
     body{
@@ -36,6 +102,7 @@
     }
 
     .logo{
+      <div id="profileArea"></div>
       font-size:28px;
       font-weight:bold;
       color:#1d9bf0;
@@ -239,7 +306,66 @@
   </style>
 </head>
 <body>
+<!-- =========================================
+LOGIN / CADASTRO
+========================================= -->
 
+<div id="authScreen" class="auth-screen">
+
+  <div class="auth-card">
+
+    <h1>FakeTwitter</h1>
+
+    <p class="subtitle">
+      Entre na sua conta
+    </p>
+
+    <input
+      type="text"
+      id="authUsername"
+      placeholder="Nome de usuário"
+    >
+
+    <input
+      type="password"
+      id="authPassword"
+      placeholder="Senha"
+    >
+
+    <input
+      type="text"
+      id="authProfilePhoto"
+      placeholder="URL da foto de perfil"
+    >
+
+    <textarea
+      id="authBio"
+      placeholder="Descrição/Bio"
+    ></textarea>
+
+    <input
+      type="text"
+      id="authStatus"
+      placeholder="Status social"
+    >
+
+    <div class="auth-buttons">
+
+      <button class="primary" onclick="register()">
+        Criar conta
+      </button>
+
+      <button class="primary" onclick="login()">
+        Entrar
+      </button>
+
+    </div>
+
+    <div id="authStatusText"></div>
+
+  </div>
+
+</div>
 <div class="app">
 
   <aside class="sidebar">
@@ -411,8 +537,11 @@ CRIAR POST
 
 function createPost(){
 
-  const username =
-    document.getElementById("username").value.trim();
+  const user = getCurrentUser();
+
+  if(!user){
+    return;
+  }
 
   const text =
     document.getElementById("postText").value.trim();
@@ -420,15 +549,18 @@ function createPost(){
   const image =
     document.getElementById("imageUrl").value.trim();
 
-  if(!username || !text){
-    alert("Preencha nome e publicação.");
+  if(!text){
+    alert("Digite algo.");
     return;
   }
 
   const url =
     CONFIG.WEB_APP_URL +
     "?action=addPost" +
-    "&username=" + encodeURIComponent(username) +
+    "&username=" + encodeURIComponent(user.username) +
+    "&photo=" + encodeURIComponent(user.photo) +
+    "&bio=" + encodeURIComponent(user.bio) +
+    "&status=" + encodeURIComponent(user.status) +
     "&text=" + encodeURIComponent(text) +
     "&image=" + encodeURIComponent(image);
 
@@ -467,12 +599,43 @@ function loadPosts(){
       div.className = "post";
 
       div.innerHTML = `
+
         <div class="post-header">
-          <div class="user">@${escapeHtml(post.username)}</div>
-          <div class="date">${post.date}</div>
+
+          <div style="display:flex;gap:12px;align-items:center;">
+
+            <img
+              src="${post.photo || 'https://i.imgur.com/HeIi0wU.png'}"
+              class="profile-photo"
+            >
+
+            <div>
+
+              <div class="user">
+                @${escapeHtml(post.username)}
+              </div>
+
+              <div class="profile-status">
+                ${escapeHtml(post.status || '')}
+              </div>
+
+              <div class="profile-bio">
+                ${escapeHtml(post.bio || '')}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="date">
+            ${post.date}
+          </div>
+
         </div>
 
-        <div>${escapeHtml(post.text)}</div>
+        <div>
+          ${escapeHtml(post.text)}
+        </div>
 
         ${
           post.image
@@ -510,11 +673,15 @@ function loadPosts(){
           </button>
 
           <div>
+
             ${post.comments.map(comment => `
+
               <div class="comment">
                 ${escapeHtml(comment)}
               </div>
+
             `).join("")}
+
           </div>
 
         </div>
@@ -522,54 +689,6 @@ function loadPosts(){
 
       container.appendChild(div);
     });
-  });
-}
-
-/*
-======================================================
-LIKE
-======================================================
-*/
-
-function likePost(id){
-
-  const url =
-    CONFIG.WEB_APP_URL +
-    "?action=likePost&id=" + id;
-
-  jsonp(url, function(){
-    loadPosts();
-  });
-}
-
-/*
-======================================================
-COMENTAR
-======================================================
-*/
-
-function addComment(id){
-
-  const input =
-    document.getElementById("comment_" + id);
-
-  const text = input.value.trim();
-
-  if(!text){
-    return;
-  }
-
-  const url =
-    CONFIG.WEB_APP_URL +
-    "?action=commentPost" +
-    "&id=" + id +
-    "&comment=" + encodeURIComponent(text);
-
-  jsonp(url, function(){
-
-    input.value = "";
-
-    loadPosts();
   });
 }
 
@@ -679,6 +798,216 @@ loadPosts();
 loadMessages();
 
 </script>
+/* =========================================
+USUÁRIO ATUAL
+========================================= */
 
+function getCurrentUser(){
+
+  const user =
+    localStorage.getItem("fakeTwitterUser");
+
+  if(!user){
+    return null;
+  }
+
+  return JSON.parse(user);
+}
+
+/* =========================================
+MOSTRAR PERFIL
+========================================= */
+
+function renderProfile(){
+
+  const user = getCurrentUser();
+
+  if(!user){
+    return;
+  }
+
+  document.getElementById("profileArea").innerHTML = `
+
+    <div class="profile-box">
+
+      <img
+        src="${user.photo || 'https://i.imgur.com/HeIi0wU.png'}"
+        class="profile-photo"
+      >
+
+      <div>
+
+        <div class="profile-name">
+          @${escapeHtml(user.username)}
+        </div>
+
+        <div class="profile-status">
+          ${escapeHtml(user.status)}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="profile-bio">
+      ${escapeHtml(user.bio)}
+    </div>
+
+    <br>
+
+    <button class="primary" onclick="logout()">
+      Sair
+    </button>
+  `;
+}
+
+/* =========================================
+CADASTRO
+========================================= */
+
+function register(){
+
+  const username =
+    document.getElementById("authUsername").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value.trim();
+
+  const photo =
+    document.getElementById("authProfilePhoto").value.trim();
+
+  const bio =
+    document.getElementById("authBio").value.trim();
+
+  const status =
+    document.getElementById("authStatus").value.trim();
+
+  if(!username || !password){
+
+    setAuthStatus("Preencha usuário e senha.");
+
+    return;
+  }
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=register" +
+    "&username=" + encodeURIComponent(username) +
+    "&password=" + encodeURIComponent(password) +
+    "&photo=" + encodeURIComponent(photo) +
+    "&bio=" + encodeURIComponent(bio) +
+    "&status=" + encodeURIComponent(status);
+
+  jsonp(url, function(response){
+
+    if(!response.success){
+
+      setAuthStatus(response.message);
+
+      return;
+    }
+
+    localStorage.setItem(
+      "fakeTwitterUser",
+      JSON.stringify(response.user)
+    );
+
+    enterSystem();
+  });
+}
+
+/* =========================================
+LOGIN
+========================================= */
+
+function login(){
+
+  const username =
+    document.getElementById("authUsername").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value.trim();
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=login" +
+    "&username=" + encodeURIComponent(username) +
+    "&password=" + encodeURIComponent(password);
+
+  jsonp(url, function(response){
+
+    if(!response.success){
+
+      setAuthStatus(response.message);
+
+      return;
+    }
+
+    localStorage.setItem(
+      "fakeTwitterUser",
+      JSON.stringify(response.user)
+    );
+
+    enterSystem();
+  });
+}
+
+/* =========================================
+ENTRAR
+========================================= */
+
+function enterSystem(){
+
+  document
+    .getElementById("authScreen")
+    .style.display = "none";
+
+  renderProfile();
+
+  loadPosts();
+  loadMessages();
+}
+
+/* =========================================
+SAIR
+========================================= */
+
+function logout(){
+
+  localStorage.removeItem("fakeTwitterUser");
+
+  location.reload();
+}
+
+/* =========================================
+AUTH STATUS
+========================================= */
+
+function setAuthStatus(text){
+
+  document
+    .getElementById("authStatusText")
+    .innerText = text;
+}
+
+/* =========================================
+INÍCIO
+========================================= */
+
+window.onload = function(){
+
+  const user = getCurrentUser();
+
+  if(user){
+
+    enterSystem();
+
+  }else{
+
+    document
+      .getElementById("authScreen")
+      .style.display = "flex";
+  }
+};
 </body>
 </html>
