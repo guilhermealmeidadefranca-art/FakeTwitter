@@ -336,7 +336,7 @@ CONFIG
 */
 
 const CONFIG = {
-  WEB_APP_URL: "COLE_AQUI_URL_DO_WEBAPP"
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbw5a_Ls7b2RzJCeIYQM8IUuRqMUwTFyTQQ5x27VYFJZlO6UaJYmojAs_4cxPLmkOFj7/exec"
 };
 
 /*
