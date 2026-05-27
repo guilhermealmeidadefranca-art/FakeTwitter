@@ -1,18 +1,253 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FakeTwitter</title>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      /* =========================================
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FakeTwitter</title>
+
+<link rel="icon" href="data:,">
+
+<style>
+
+/* ======================================================
+RESET
+====================================================== */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f3f5f7;
+  color:#111827;
+}
+
+/* ======================================================
+LAYOUT
+====================================================== */
+
+.app{
+  max-width:1300px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:260px 1fr 320px;
+  min-height:100vh;
+}
+
+.sidebar{
+  background:white;
+  border-right:1px solid #e5e7eb;
+  padding:20px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+
+.main{
+  padding:20px;
+}
+
+.rightbar{
+  background:white;
+  border-left:1px solid #e5e7eb;
+  padding:20px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+
+/* ======================================================
+LOGO
+====================================================== */
+
+.logo{
+  font-size:32px;
+  font-weight:bold;
+  color:#1d9bf0;
+  margin-bottom:30px;
+}
+
+/* ======================================================
+MENU
+====================================================== */
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:20px;
+}
+
+.menu button{
+  border:none;
+  background:#f3f4f6;
+  padding:14px;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:16px;
+  text-align:left;
+}
+
+.menu button:hover{
+  background:#e5e7eb;
+}
+
+.menu button.active{
+  background:#1d9bf0;
+  color:white;
+}
+
+/* ======================================================
+CARD
+====================================================== */
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom:20px;
+}
+
+/* ======================================================
+INPUTS
+====================================================== */
+
+input,
+textarea{
+  width:100%;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  font-size:15px;
+  outline:none;
+}
+
+textarea{
+  resize:vertical;
+  min-height:120px;
+}
+
+/* ======================================================
+BOTÕES
+====================================================== */
+
+.primary{
+  background:#1d9bf0;
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.primary:hover{
+  background:#0f87d8;
+}
+
+/* ======================================================
+POST
+====================================================== */
+
+.post{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.post-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+
+.post-user{
+  display:flex;
+  gap:12px;
+}
+
+.profile-photo{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #1d9bf0;
+}
+
+.profile-name{
+  font-weight:bold;
+}
+
+.profile-status{
+  color:#1d9bf0;
+  font-size:14px;
+}
+
+.profile-bio{
+  color:#6b7280;
+  font-size:14px;
+}
+
+.post-date{
+  color:#6b7280;
+  font-size:13px;
+}
+
+.post-image{
+  width:100%;
+  border-radius:14px;
+  margin-top:16px;
+  max-height:500px;
+  object-fit:cover;
+}
+
+/* ======================================================
+ACTIONS
+====================================================== */
+
+.actions{
+  display:flex;
+  gap:20px;
+  margin-top:18px;
+  border-top:1px solid #e5e7eb;
+  padding-top:14px;
+}
+
+.action-btn{
+  border:none;
+  background:none;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.heart{
+  color:#ef4444;
+  font-size:22px;
+}
+
+/* ======================================================
+COMMENTS
+====================================================== */
+
+.comment{
+  background:#f3f4f6;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+/* ======================================================
 AUTH
-========================================= */
+====================================================== */
 
 .auth-screen{
   position:fixed;
@@ -38,281 +273,71 @@ AUTH
   margin-bottom:10px;
 }
 
-.subtitle{
-  color:#6b7280;
-  margin-bottom:20px;
-}
-
 .auth-buttons{
   display:flex;
   gap:10px;
 }
 
-.profile-box{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.subtitle{
+  color:#6b7280;
   margin-bottom:20px;
 }
 
-.profile-photo{
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #1d9bf0;
+/* ======================================================
+PROFILE
+====================================================== */
+
+.profile-box{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-bottom:20px;
 }
 
-.profile-name{
-  font-weight:bold;
+/* ======================================================
+HIDDEN
+====================================================== */
+
+.hidden{
+  display:none;
 }
 
-.profile-status{
-  color:#1d9bf0;
-  font-size:14px;
+/* ======================================================
+RESPONSIVO
+====================================================== */
+
+@media(max-width:1000px){
+
+  .app{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar,
+  .rightbar{
+    height:auto;
+    position:relative;
+    border:none;
+  }
+
+  .menu{
+    flex-direction:row;
+  }
+
+  .menu button{
+    flex:1;
+    text-align:center;
+  }
 }
 
-.profile-bio{
-  color:#6b7280;
-  font-size:14px;
-}
-    }
+</style>
 
-    body{
-      font-family: Arial, Helvetica, sans-serif;
-      background:#f3f5f7;
-      color:#111827;
-    }
-
-    .app{
-      max-width:1200px;
-      margin:auto;
-      min-height:100vh;
-      display:grid;
-      grid-template-columns:260px 1fr 320px;
-    }
-
-    .sidebar{
-      background:white;
-      border-right:1px solid #e5e7eb;
-      padding:20px;
-      position:sticky;
-      top:0;
-      height:100vh;
-    }
-
-    .logo{
-      <div id="profileArea"></div>
-      font-size:28px;
-      font-weight:bold;
-      color:#1d9bf0;
-      margin-bottom:30px;
-    }
-
-    .menu{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .menu button{
-      border:none;
-      background:#f3f4f6;
-      padding:14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:16px;
-      text-align:left;
-      transition:0.2s;
-    }
-
-    .menu button:hover{
-      background:#e5e7eb;
-    }
-
-    .menu button.active{
-      background:#1d9bf0;
-      color:white;
-    }
-
-    .main{
-      padding:20px;
-    }
-
-    .rightbar{
-      background:white;
-      border-left:1px solid #e5e7eb;
-      padding:20px;
-      position:sticky;
-      top:0;
-      height:100vh;
-    }
-
-    .card{
-      background:white;
-      border-radius:16px;
-      padding:20px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.05);
-      margin-bottom:20px;
-    }
-
-    .title{
-      font-size:22px;
-      font-weight:bold;
-      margin-bottom:20px;
-    }
-
-    input, textarea{
-      width:100%;
-      padding:14px;
-      border:1px solid #d1d5db;
-      border-radius:12px;
-      margin-bottom:12px;
-      font-size:15px;
-      outline:none;
-    }
-
-    textarea{
-      resize:vertical;
-      min-height:100px;
-    }
-
-    button.primary{
-      background:#1d9bf0;
-      color:white;
-      border:none;
-      padding:12px 18px;
-      border-radius:12px;
-      cursor:pointer;
-      font-size:15px;
-      font-weight:bold;
-    }
-
-    button.primary:hover{
-      background:#0f87d8;
-    }
-
-    .post{
-      background:white;
-      border-radius:16px;
-      padding:20px;
-      margin-bottom:16px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .post-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:12px;
-    }
-
-    .user{
-      font-weight:bold;
-    }
-
-    .date{
-      color:#6b7280;
-      font-size:13px;
-    }
-
-    .post-image{
-      width:100%;
-      border-radius:14px;
-      margin-top:15px;
-      max-height:400px;
-      object-fit:cover;
-    }
-
-    .actions{
-      display:flex;
-      gap:20px;
-      margin-top:15px;
-      padding-top:12px;
-      border-top:1px solid #e5e7eb;
-    }
-
-    .action-btn{
-      border:none;
-      background:none;
-      cursor:pointer;
-      font-size:15px;
-      color:#374151;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-
-    .heart{
-      color:#ef4444;
-      font-size:22px;
-    }
-
-    .comment-box{
-      margin-top:15px;
-    }
-
-    .comment{
-      background:#f3f4f6;
-      padding:10px;
-      border-radius:10px;
-      margin-top:8px;
-      font-size:14px;
-    }
-
-    .message{
-      background:#f3f4f6;
-      padding:12px;
-      border-radius:12px;
-      margin-bottom:10px;
-    }
-
-    .hidden{
-      display:none;
-    }
-
-    .status{
-      margin-top:10px;
-      color:#1d4ed8;
-      font-size:14px;
-    }
-
-    @media(max-width:1000px){
-
-      .app{
-        grid-template-columns:1fr;
-      }
-
-      .sidebar,
-      .rightbar{
-        position:relative;
-        height:auto;
-        border:none;
-      }
-
-      .sidebar{
-        padding-bottom:0;
-      }
-
-      .menu{
-        flex-direction:row;
-      }
-
-      .menu button{
-        flex:1;
-        text-align:center;
-      }
-    }
-  </style>
 </head>
-  <link rel="icon" href="data:,">
+
 <body>
-  <script>
-  // TODO O JAVASCRIPT AQUI
-</script>
-<!-- =========================================
-LOGIN / CADASTRO
-========================================= -->
+
+<!-- ======================================================
+LOGIN
+====================================================== -->
 
 <div id="authScreen" class="auth-screen">
 
@@ -321,13 +346,13 @@ LOGIN / CADASTRO
     <h1>FakeTwitter</h1>
 
     <p class="subtitle">
-      Entre na sua conta
+      Entre ou crie sua conta
     </p>
 
     <input
       type="text"
       id="authUsername"
-      placeholder="Nome de usuário"
+      placeholder="Usuário"
     >
 
     <input
@@ -339,7 +364,7 @@ LOGIN / CADASTRO
     <input
       type="text"
       id="authProfilePhoto"
-      placeholder="URL da foto de perfil"
+      placeholder="URL da foto"
     >
 
     <textarea
@@ -365,83 +390,147 @@ LOGIN / CADASTRO
 
     </div>
 
+    <br>
+
     <div id="authStatusText"></div>
 
   </div>
 
 </div>
+
+<!-- ======================================================
+APP
+====================================================== -->
+
 <div class="app">
 
+  <!-- ======================================================
+  SIDEBAR
+  ====================================================== -->
+
   <aside class="sidebar">
-    <div class="logo">FakeTwitter</div>
+
+    <div class="logo">
+      FakeTwitter
+    </div>
+
+    <div id="profileArea"></div>
 
     <div class="menu">
-      <button class="active" onclick="showTab('feed', this)">
+
+      <button
+        class="active"
+        onclick="showTab('feed', this)"
+      >
         🏠 Feed
       </button>
 
-      <button onclick="showTab('messages', this)">
+      <button
+        onclick="showTab('messages', this)"
+      >
         ✉️ Mensagens
       </button>
+
     </div>
+
   </aside>
 
+  <!-- ======================================================
+  MAIN
+  ====================================================== -->
+
   <main class="main">
+
+    <!-- ======================================================
+    FEED
+    ====================================================== -->
 
     <section id="feedTab">
 
       <div class="card">
-        <div class="title">Nova publicação</div>
 
-        <input type="text" id="username" placeholder="Seu nome">
+        <h2>Nova publicação</h2>
 
-        <textarea id="postText" placeholder="O que está acontecendo?"></textarea>
+        <br>
 
-        <input type="text" id="imageUrl" placeholder="URL da imagem (opcional)">
+        <textarea
+          id="postText"
+          placeholder="O que está acontecendo?"
+        ></textarea>
+
+        <input
+          type="text"
+          id="imageUrl"
+          placeholder="URL da imagem"
+        >
 
         <button class="primary" onclick="createPost()">
           Publicar
         </button>
 
-        <div class="status" id="status"></div>
       </div>
 
       <div id="postsContainer"></div>
 
     </section>
 
+    <!-- ======================================================
+    MESSAGES
+    ====================================================== -->
+
     <section id="messagesTab" class="hidden">
 
       <div class="card">
-        <div class="title">Enviar mensagem</div>
 
-        <input type="text" id="msgFrom" placeholder="Seu nome">
+        <h2>Enviar mensagem</h2>
 
-        <input type="text" id="msgTo" placeholder="Destinatário">
+        <br>
 
-        <textarea id="msgText" placeholder="Digite sua mensagem"></textarea>
+        <input
+          type="text"
+          id="msgTo"
+          placeholder="Destinatário"
+        >
+
+        <textarea
+          id="msgText"
+          placeholder="Digite sua mensagem"
+        ></textarea>
 
         <button class="primary" onclick="sendMessage()">
           Enviar
         </button>
+
       </div>
 
       <div class="card">
-        <div class="title">Mensagens</div>
+
+        <h2>Mensagens</h2>
+
+        <br>
 
         <div id="messagesContainer"></div>
+
       </div>
 
     </section>
 
   </main>
 
+  <!-- ======================================================
+  RIGHTBAR
+  ====================================================== -->
+
   <aside class="rightbar">
+
     <div class="card">
-      <div class="title">Sobre</div>
+
+      <h2>Sobre</h2>
+
+      <br>
 
       <p>
-        Rede social estática usando:
+        Rede social feita com:
       </p>
 
       <br>
@@ -449,17 +538,79 @@ LOGIN / CADASTRO
       <p>
         ✔ GitHub Pages<br>
         ✔ Google Apps Script<br>
-        ✔ Google Planilhas<br>
+        ✔ Google Sheets<br>
         ✔ JSONP sem CORS
       </p>
+
     </div>
+
   </aside>
 
 </div>
 
+<!-- ======================================================
+SCRIPT
+====================================================== -->
+
 <script>
+
 /* ======================================================
-USUÁRIO ATUAL
+CONFIG
+====================================================== */
+
+const CONFIG = {
+
+  WEB_APP_URL:
+    "COLE_AQUI_URL_DO_WEBAPP"
+
+};
+
+/* ======================================================
+JSONP
+====================================================== */
+
+function jsonp(url, callback){
+
+  const callbackName =
+    "jsonp_" +
+    Math.random().toString(36).substring(2);
+
+  window[callbackName] = function(data){
+
+    callback(data);
+
+    delete window[callbackName];
+
+    document.body.removeChild(script);
+  };
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    url +
+    (url.includes("?") ? "&" : "?") +
+    "callback=" + callbackName;
+
+  document.body.appendChild(script);
+}
+
+/* ======================================================
+ESCAPE HTML
+====================================================== */
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement("div");
+
+  div.innerText = text;
+
+  return div.innerHTML;
+}
+
+/* ======================================================
+CURRENT USER
 ====================================================== */
 
 function getCurrentUser(){
@@ -480,16 +631,13 @@ AUTH STATUS
 
 function setAuthStatus(text){
 
-  const el =
-    document.getElementById("authStatusText");
-
-  if(el){
-    el.innerText = text;
-  }
+  document
+    .getElementById("authStatusText")
+    .innerText = text;
 }
 
 /* ======================================================
-CADASTRO
+REGISTER
 ====================================================== */
 
 function register(){
@@ -580,37 +728,37 @@ function login(){
 }
 
 /* ======================================================
-ENTRAR
+ENTER SYSTEM
 ====================================================== */
 
 function enterSystem(){
 
-  const authScreen =
-    document.getElementById("authScreen");
-
-  if(authScreen){
-    authScreen.style.display = "none";
-  }
+  document
+    .getElementById("authScreen")
+    .style.display = "none";
 
   renderProfile();
 
   loadPosts();
+
   loadMessages();
 }
 
 /* ======================================================
-SAIR
+LOGOUT
 ====================================================== */
 
 function logout(){
 
-  localStorage.removeItem("fakeTwitterUser");
+  localStorage.removeItem(
+    "fakeTwitterUser"
+  );
 
   location.reload();
 }
 
 /* ======================================================
-RENDER PROFILE
+PROFILE
 ====================================================== */
 
 function renderProfile(){
@@ -621,149 +769,49 @@ function renderProfile(){
     return;
   }
 
-  const profileArea =
-    document.getElementById("profileArea");
+  document
+    .getElementById("profileArea")
+    .innerHTML = `
 
-  if(!profileArea){
-    return;
-  }
+      <div class="profile-box">
 
-  profileArea.innerHTML = `
+        <img
+          src="${
+            user.photo ||
+            'https://placehold.co/100x100'
+          }"
+          class="profile-photo"
+        >
 
-    <div class="profile-box">
+        <div>
 
-      <img
-        src="${user.photo || 'https://placehold.co/100x100'}"
-        class="profile-photo"
-      >
+          <div class="profile-name">
+            @${escapeHtml(user.username)}
+          </div>
 
-      <div>
+          <div class="profile-status">
+            ${escapeHtml(user.status || '')}
+          </div>
 
-        <div class="profile-name">
-          @${escapeHtml(user.username)}
-        </div>
-
-        <div class="profile-status">
-          ${escapeHtml(user.status || '')}
         </div>
 
       </div>
 
-    </div>
+      <div class="profile-bio">
+        ${escapeHtml(user.bio || '')}
+      </div>
 
-    <div class="profile-bio">
-      ${escapeHtml(user.bio || '')}
-    </div>
+      <br>
 
-    <br>
-
-    <button class="primary" onclick="logout()">
-      Sair
-    </button>
-  `;
+      <button class="primary" onclick="logout()">
+        Sair
+      </button>
+    `;
 }
 
 /* ======================================================
-INICIAR
+CREATE POST
 ====================================================== */
-
-window.onload = function(){
-
-  const user = getCurrentUser();
-
-  if(user){
-
-    enterSystem();
-
-  }else{
-
-    const auth =
-      document.getElementById("authScreen");
-
-    if(auth){
-      auth.style.display = "flex";
-    }
-  }
-};
-/*
-======================================================
-CONFIG
-======================================================
-*/
-
-const CONFIG = {
-  WEB_APP_URL: "https://script.google.com/macros/s/AKfycby5haiD3-15zFDuaPfl18GUmE_r0Yw-EXsC58dAIfocA69_Gy9V2pCXKsgArWxTCyZH/exec"
-};
-
-/*
-======================================================
-JSONP
-======================================================
-*/
-
-function jsonp(url, callback){
-
-  const callbackName =
-    "jsonp_" + Math.random().toString(36).substring(2);
-
-  window[callbackName] = function(data){
-
-    callback(data);
-
-    delete window[callbackName];
-    document.body.removeChild(script);
-  };
-
-  const script = document.createElement("script");
-
-  script.src =
-    url +
-    (url.includes("?") ? "&" : "?") +
-    "callback=" + callbackName;
-
-  document.body.appendChild(script);
-}
-
-/*
-======================================================
-ABAS
-======================================================
-*/
-
-function showTab(tab, element){
-
-  document
-    .querySelectorAll(".menu button")
-    .forEach(btn => btn.classList.remove("active"));
-
-  element.classList.add("active");
-
-  document
-    .getElementById("feedTab")
-    .classList.add("hidden");
-
-  document
-    .getElementById("messagesTab")
-    .classList.add("hidden");
-
-  if(tab === "feed"){
-    document
-      .getElementById("feedTab")
-      .classList.remove("hidden");
-  }
-
-  if(tab === "messages"){
-    document
-      .getElementById("messagesTab")
-      .classList.remove("hidden");
-  }
-}
-
-/*
-======================================================
-CRIAR POST
-======================================================
-*/
 
 function createPost(){
 
@@ -788,9 +836,9 @@ function createPost(){
     CONFIG.WEB_APP_URL +
     "?action=addPost" +
     "&username=" + encodeURIComponent(user.username) +
-    "&photo=" + encodeURIComponent(user.photo) +
-    "&bio=" + encodeURIComponent(user.bio) +
-    "&status=" + encodeURIComponent(user.status) +
+    "&photo=" + encodeURIComponent(user.photo || "") +
+    "&bio=" + encodeURIComponent(user.bio || "") +
+    "&status=" + encodeURIComponent(user.status || "") +
     "&text=" + encodeURIComponent(text) +
     "&image=" + encodeURIComponent(image);
 
@@ -803,11 +851,9 @@ function createPost(){
   });
 }
 
-/*
-======================================================
-CARREGAR POSTS
-======================================================
-*/
+/* ======================================================
+LOAD POSTS
+====================================================== */
 
 function loadPosts(){
 
@@ -824,7 +870,8 @@ function loadPosts(){
 
     response.data.forEach(post => {
 
-      const div = document.createElement("div");
+      const div =
+        document.createElement("div");
 
       div.className = "post";
 
@@ -832,16 +879,19 @@ function loadPosts(){
 
         <div class="post-header">
 
-          <div style="display:flex;gap:12px;align-items:center;">
+          <div class="post-user">
 
             <img
-              src="${post.photo || 'https://i.imgur.com/HeIi0wU.png'}"
+              src="${
+                post.photo ||
+                'https://placehold.co/100x100'
+              }"
               class="profile-photo"
             >
 
             <div>
 
-              <div class="user">
+              <div class="profile-name">
                 @${escapeHtml(post.username)}
               </div>
 
@@ -857,7 +907,7 @@ function loadPosts(){
 
           </div>
 
-          <div class="date">
+          <div class="post-date">
             ${post.date}
           </div>
 
@@ -869,15 +919,21 @@ function loadPosts(){
 
         ${
           post.image
-          ? `<img class="post-image" src="${post.image}">`
+          ? `
+            <img
+              class="post-image"
+              src="${post.image}"
+            >
+          `
           : ""
         }
 
         <div class="actions">
 
-          <button class="action-btn"
-            onclick="likePost('${post.id}')">
-
+          <button
+            class="action-btn"
+            onclick="likePost('${post.id}')"
+          >
             <span class="heart">♥</span>
             ${post.likes}
           </button>
@@ -888,31 +944,30 @@ function loadPosts(){
 
         </div>
 
-        <div class="comment-box">
+        <br>
 
-          <input
-            type="text"
-            id="comment_${post.id}"
-            placeholder="Escreva um comentário"
-          >
+        <input
+          type="text"
+          id="comment_${post.id}"
+          placeholder="Escreva um comentário"
+        >
 
-          <button class="primary"
-            onclick="addComment('${post.id}')">
+        <button
+          class="primary"
+          onclick="addComment('${post.id}')"
+        >
+          Comentar
+        </button>
 
-            Comentar
-          </button>
+        <div>
 
-          <div>
+          ${post.comments.map(comment => `
 
-            ${post.comments.map(comment => `
+            <div class="comment">
+              ${escapeHtml(comment)}
+            </div>
 
-              <div class="comment">
-                ${escapeHtml(comment)}
-              </div>
-
-            `).join("")}
-
-          </div>
+          `).join("")}
 
         </div>
       `;
@@ -922,16 +977,61 @@ function loadPosts(){
   });
 }
 
-/*
-======================================================
-MENSAGENS
-======================================================
-*/
+/* ======================================================
+LIKE
+====================================================== */
+
+function likePost(id){
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=likePost&id=" + id;
+
+  jsonp(url, function(){
+
+    loadPosts();
+  });
+}
+
+/* ======================================================
+COMMENT
+====================================================== */
+
+function addComment(id){
+
+  const input =
+    document.getElementById(
+      "comment_" + id
+    );
+
+  const text =
+    input.value.trim();
+
+  if(!text){
+    return;
+  }
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=commentPost" +
+    "&id=" + id +
+    "&comment=" + encodeURIComponent(text);
+
+  jsonp(url, function(){
+
+    input.value = "";
+
+    loadPosts();
+  });
+}
+
+/* ======================================================
+SEND MESSAGE
+====================================================== */
 
 function sendMessage(){
 
-  const from =
-    document.getElementById("msgFrom").value.trim();
+  const user = getCurrentUser();
 
   const to =
     document.getElementById("msgTo").value.trim();
@@ -939,15 +1039,17 @@ function sendMessage(){
   const text =
     document.getElementById("msgText").value.trim();
 
-  if(!from || !to || !text){
-    alert("Preencha todos os campos.");
+  if(!to || !text){
+
+    alert("Preencha os campos.");
+
     return;
   }
 
   const url =
     CONFIG.WEB_APP_URL +
     "?action=sendMessage" +
-    "&from=" + encodeURIComponent(from) +
+    "&from=" + encodeURIComponent(user.username) +
     "&to=" + encodeURIComponent(to) +
     "&text=" + encodeURIComponent(text);
 
@@ -959,13 +1061,13 @@ function sendMessage(){
   });
 }
 
-/*
-======================================================
-CARREGAR MENSAGENS
-======================================================
-*/
+/* ======================================================
+LOAD MESSAGES
+====================================================== */
 
 function loadMessages(){
+
+  const user = getCurrentUser();
 
   const url =
     CONFIG.WEB_APP_URL +
@@ -980,249 +1082,84 @@ function loadMessages(){
 
     response.data.forEach(msg => {
 
-      const div = document.createElement("div");
+      if(
+        msg.from === user.username ||
+        msg.to === user.username
+      ){
 
-      div.className = "message";
+        const div =
+          document.createElement("div");
 
-      div.innerHTML = `
-        <strong>${escapeHtml(msg.from)}</strong>
-        ➜
-        <strong>${escapeHtml(msg.to)}</strong>
+        div.className = "comment";
 
-        <br><br>
+        div.innerHTML = `
 
-        ${escapeHtml(msg.text)}
+          <strong>
+            ${escapeHtml(msg.from)}
+          </strong>
 
-        <br><br>
+          ➜
 
-        <small>${msg.date}</small>
-      `;
+          <strong>
+            ${escapeHtml(msg.to)}
+          </strong>
 
-      container.appendChild(div);
+          <br><br>
+
+          ${escapeHtml(msg.text)}
+
+          <br><br>
+
+          <small>${msg.date}</small>
+        `;
+
+        container.appendChild(div);
+      }
     });
   });
 }
 
-/*
-======================================================
-UTIL
-======================================================
-*/
+/* ======================================================
+TABS
+====================================================== */
 
-function escapeHtml(text){
-
-  const div = document.createElement("div");
-
-  div.innerText = text;
-
-  return div.innerHTML;
-}
-
-/*
-======================================================
-INIT
-======================================================
-*/
-
-loadPosts();
-loadMessages();
-
-</script>
-/* =========================================
-USUÁRIO ATUAL
-========================================= */
-
-function getCurrentUser(){
-
-  const user =
-    localStorage.getItem("fakeTwitterUser");
-
-  if(!user){
-    return null;
-  }
-
-  return JSON.parse(user);
-}
-
-/* =========================================
-MOSTRAR PERFIL
-========================================= */
-
-function renderProfile(){
-
-  const user = getCurrentUser();
-
-  if(!user){
-    return;
-  }
-
-  document.getElementById("profileArea").innerHTML = `
-
-    <div class="profile-box">
-
-      <img
-        src="${user.photo || 'https://i.imgur.com/HeIi0wU.png'}"
-        class="profile-photo"
-      >
-
-      <div>
-
-        <div class="profile-name">
-          @${escapeHtml(user.username)}
-        </div>
-
-        <div class="profile-status">
-          ${escapeHtml(user.status)}
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="profile-bio">
-      ${escapeHtml(user.bio)}
-    </div>
-
-    <br>
-
-    <button class="primary" onclick="logout()">
-      Sair
-    </button>
-  `;
-}
-
-/* =========================================
-CADASTRO
-========================================= */
-
-function register(){
-
-  const username =
-    document.getElementById("authUsername").value.trim();
-
-  const password =
-    document.getElementById("authPassword").value.trim();
-
-  const photo =
-    document.getElementById("authProfilePhoto").value.trim();
-
-  const bio =
-    document.getElementById("authBio").value.trim();
-
-  const status =
-    document.getElementById("authStatus").value.trim();
-
-  if(!username || !password){
-
-    setAuthStatus("Preencha usuário e senha.");
-
-    return;
-  }
-
-  const url =
-    CONFIG.WEB_APP_URL +
-    "?action=register" +
-    "&username=" + encodeURIComponent(username) +
-    "&password=" + encodeURIComponent(password) +
-    "&photo=" + encodeURIComponent(photo) +
-    "&bio=" + encodeURIComponent(bio) +
-    "&status=" + encodeURIComponent(status);
-
-  jsonp(url, function(response){
-
-    if(!response.success){
-
-      setAuthStatus(response.message);
-
-      return;
-    }
-
-    localStorage.setItem(
-      "fakeTwitterUser",
-      JSON.stringify(response.user)
-    );
-
-    enterSystem();
-  });
-}
-
-/* =========================================
-LOGIN
-========================================= */
-
-function login(){
-
-  const username =
-    document.getElementById("authUsername").value.trim();
-
-  const password =
-    document.getElementById("authPassword").value.trim();
-
-  const url =
-    CONFIG.WEB_APP_URL +
-    "?action=login" +
-    "&username=" + encodeURIComponent(username) +
-    "&password=" + encodeURIComponent(password);
-
-  jsonp(url, function(response){
-
-    if(!response.success){
-
-      setAuthStatus(response.message);
-
-      return;
-    }
-
-    localStorage.setItem(
-      "fakeTwitterUser",
-      JSON.stringify(response.user)
-    );
-
-    enterSystem();
-  });
-}
-
-/* =========================================
-ENTRAR
-========================================= */
-
-function enterSystem(){
+function showTab(tab, btn){
 
   document
-    .getElementById("authScreen")
-    .style.display = "none";
+    .querySelectorAll(".menu button")
+    .forEach(button => {
 
-  renderProfile();
+      button.classList.remove("active");
+    });
 
-  loadPosts();
-  loadMessages();
-}
-
-/* =========================================
-SAIR
-========================================= */
-
-function logout(){
-
-  localStorage.removeItem("fakeTwitterUser");
-
-  location.reload();
-}
-
-/* =========================================
-AUTH STATUS
-========================================= */
-
-function setAuthStatus(text){
+  btn.classList.add("active");
 
   document
-    .getElementById("authStatusText")
-    .innerText = text;
+    .getElementById("feedTab")
+    .classList.add("hidden");
+
+  document
+    .getElementById("messagesTab")
+    .classList.add("hidden");
+
+  if(tab === "feed"){
+
+    document
+      .getElementById("feedTab")
+      .classList.remove("hidden");
+  }
+
+  if(tab === "messages"){
+
+    document
+      .getElementById("messagesTab")
+      .classList.remove("hidden");
+  }
 }
 
-/* =========================================
-INÍCIO
-========================================= */
+/* ======================================================
+START
+====================================================== */
 
 window.onload = function(){
 
@@ -1239,5 +1176,8 @@ window.onload = function(){
       .style.display = "flex";
   }
 };
+
+</script>
+
 </body>
 </html>
