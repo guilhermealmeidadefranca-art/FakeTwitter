@@ -305,7 +305,11 @@ AUTH
     }
   </style>
 </head>
+  <link rel="icon" href="data:,">
 <body>
+  <script>
+  // TODO O JAVASCRIPT AQUI
+</script>
 <!-- =========================================
 LOGIN / CADASTRO
 ========================================= -->
@@ -454,7 +458,233 @@ LOGIN / CADASTRO
 </div>
 
 <script>
+/* ======================================================
+USUÁRIO ATUAL
+====================================================== */
 
+function getCurrentUser(){
+
+  const user =
+    localStorage.getItem("fakeTwitterUser");
+
+  if(!user){
+    return null;
+  }
+
+  return JSON.parse(user);
+}
+
+/* ======================================================
+AUTH STATUS
+====================================================== */
+
+function setAuthStatus(text){
+
+  const el =
+    document.getElementById("authStatusText");
+
+  if(el){
+    el.innerText = text;
+  }
+}
+
+/* ======================================================
+CADASTRO
+====================================================== */
+
+function register(){
+
+  const username =
+    document.getElementById("authUsername").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value.trim();
+
+  const photo =
+    document.getElementById("authProfilePhoto").value.trim();
+
+  const bio =
+    document.getElementById("authBio").value.trim();
+
+  const status =
+    document.getElementById("authStatus").value.trim();
+
+  if(!username || !password){
+
+    setAuthStatus("Preencha usuário e senha.");
+
+    return;
+  }
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=register" +
+    "&username=" + encodeURIComponent(username) +
+    "&password=" + encodeURIComponent(password) +
+    "&photo=" + encodeURIComponent(photo) +
+    "&bio=" + encodeURIComponent(bio) +
+    "&status=" + encodeURIComponent(status);
+
+  jsonp(url, function(response){
+
+    if(!response.success){
+
+      setAuthStatus(response.message);
+
+      return;
+    }
+
+    localStorage.setItem(
+      "fakeTwitterUser",
+      JSON.stringify(response.user)
+    );
+
+    enterSystem();
+  });
+}
+
+/* ======================================================
+LOGIN
+====================================================== */
+
+function login(){
+
+  const username =
+    document.getElementById("authUsername").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value.trim();
+
+  const url =
+    CONFIG.WEB_APP_URL +
+    "?action=login" +
+    "&username=" + encodeURIComponent(username) +
+    "&password=" + encodeURIComponent(password);
+
+  jsonp(url, function(response){
+
+    if(!response.success){
+
+      setAuthStatus(response.message);
+
+      return;
+    }
+
+    localStorage.setItem(
+      "fakeTwitterUser",
+      JSON.stringify(response.user)
+    );
+
+    enterSystem();
+  });
+}
+
+/* ======================================================
+ENTRAR
+====================================================== */
+
+function enterSystem(){
+
+  const authScreen =
+    document.getElementById("authScreen");
+
+  if(authScreen){
+    authScreen.style.display = "none";
+  }
+
+  renderProfile();
+
+  loadPosts();
+  loadMessages();
+}
+
+/* ======================================================
+SAIR
+====================================================== */
+
+function logout(){
+
+  localStorage.removeItem("fakeTwitterUser");
+
+  location.reload();
+}
+
+/* ======================================================
+RENDER PROFILE
+====================================================== */
+
+function renderProfile(){
+
+  const user = getCurrentUser();
+
+  if(!user){
+    return;
+  }
+
+  const profileArea =
+    document.getElementById("profileArea");
+
+  if(!profileArea){
+    return;
+  }
+
+  profileArea.innerHTML = `
+
+    <div class="profile-box">
+
+      <img
+        src="${user.photo || 'https://placehold.co/100x100'}"
+        class="profile-photo"
+      >
+
+      <div>
+
+        <div class="profile-name">
+          @${escapeHtml(user.username)}
+        </div>
+
+        <div class="profile-status">
+          ${escapeHtml(user.status || '')}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="profile-bio">
+      ${escapeHtml(user.bio || '')}
+    </div>
+
+    <br>
+
+    <button class="primary" onclick="logout()">
+      Sair
+    </button>
+  `;
+}
+
+/* ======================================================
+INICIAR
+====================================================== */
+
+window.onload = function(){
+
+  const user = getCurrentUser();
+
+  if(user){
+
+    enterSystem();
+
+  }else{
+
+    const auth =
+      document.getElementById("authScreen");
+
+    if(auth){
+      auth.style.display = "flex";
+    }
+  }
+};
 /*
 ======================================================
 CONFIG
